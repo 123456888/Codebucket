@@ -1,31 +1,45 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Alert } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteUser } from '../redux/authSlice';
+import { deleteUser, logoutUser } from '../redux/authSlice';
+import ButtonComponent from '../components/ButtonComponent';
 
 const Profile = ({ navigation }) => {
-
   const dispatch = useDispatch();
-
   const currentUser = useSelector(state => state.auth.currentUser);
 
   const handleDelete = () => {
     Alert.alert(
-      "Delete Account",
-      "Are you sure you want to delete your account?",
+      'Delete Account',
+      'Are you sure you want to delete your account?',
       [
-        { text: "Cancel", style: "cancel" },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: "OK",
-          style: "destructive",
+          text: 'OK',
+          style: 'destructive',
           onPress: () => {
-
             dispatch(deleteUser(currentUser.email));
-
             navigation.replace('Login');
-          }
-        }
-      ]
+          },
+        },
+      ],
+    );
+  };
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'OK',
+          onPress: () => {
+            dispatch(logoutUser());
+            navigation.replace('Login');
+          },
+        },
+      ],
     );
   };
 
@@ -33,27 +47,54 @@ const Profile = ({ navigation }) => {
     <View
       style={{
         flex: 1,
+        backgroundColor: '#eef2ff',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f2f6ff',
+        padding: 20,
       }}
     >
       <View
         style={{
-          width: '90%',
-          backgroundColor: 'white',
-          padding: 25,
-          borderRadius: 15,
-          elevation: 5,
+          width: '100%',
+          backgroundColor: '#ffffff',
+          borderRadius: 20,
+          paddingVertical: 30,
+          paddingHorizontal: 20,
           alignItems: 'center',
+          shadowColor: '#000',
+          shadowOpacity: 0.15,
+          shadowRadius: 10,
+          elevation: 8,
         }}
       >
+        <View
+          style={{
+            width: 80,
+            height: 80,
+            borderRadius: 40,
+            backgroundColor: '#4c669f',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginBottom: 15,
+          }}
+        >
+          <Text
+            style={{
+              color: '#fff',
+              fontSize: 30,
+              fontWeight: 'bold',
+            }}
+          >
+            {currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
+          </Text>
+        </View>
 
         <Text
           style={{
             fontSize: 24,
             fontWeight: 'bold',
-            marginBottom: 20,
+            color: '#1f2937',
+            marginBottom: 5,
           }}
         >
           Profile 👤
@@ -64,7 +105,7 @@ const Profile = ({ navigation }) => {
             fontSize: 18,
             fontWeight: '600',
             color: '#4c669f',
-            marginBottom: 10,
+            marginBottom: 5,
           }}
         >
           {currentUser?.name}
@@ -72,29 +113,34 @@ const Profile = ({ navigation }) => {
 
         <Text
           style={{
-            fontSize: 16,
-            color: '#555',
+            fontSize: 15,
+            color: '#6b7280',
             marginBottom: 20,
           }}
         >
           {currentUser?.email}
         </Text>
 
-        <TouchableOpacity
+        <ButtonComponent
+          title={'Logout'}
+          onPress={handleLogout}
+          style={{
+            backgroundColor: '#22c55e',
+            width: '100%',
+            marginBottom: 10,
+            borderRadius: 12,
+          }}
+        />
+
+        <ButtonComponent
+          title={'Delete Account'}
           onPress={handleDelete}
           style={{
-            backgroundColor: 'red',
-            padding: 12,
-            borderRadius: 10,
+            backgroundColor: '#ef4444',
             width: '100%',
-            alignItems: 'center',
+            borderRadius: 12,
           }}
-        >
-          <Text style={{ color: 'white', fontWeight: 'bold' }}>
-            Delete Account
-          </Text>
-        </TouchableOpacity>
-
+        />
       </View>
     </View>
   );

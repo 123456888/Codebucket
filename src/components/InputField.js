@@ -4,13 +4,12 @@ import { TextInput } from 'react-native';
 const InputField = (props) => {
   return (
     <TextInput
-      placeholderTextColor="#aaa"
+      placeholderTextColor="#4a4848"
       style={{
-        backgroundColor: 'white',
         borderRadius: 10,
         paddingHorizontal: 15,
         height: 50,
-        marginBottom: 15,
+        color:"black"
       }}
       {...props}
     />

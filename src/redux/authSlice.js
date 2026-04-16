@@ -31,7 +31,7 @@ const authSlice = createSlice({
       state.users = state.users.filter(
         user => user.email !== action.payload
       );
-
+                             
       state.currentUser = null;
     },
   },
