@@ -80,7 +80,7 @@ const Dashboard = () => {
             textAlign: 'center',
           }}
         >
-         Hi, I'm Subham — a passionate developer building mobile apps.
+         Hi, I'm {currentUser.name} — a passionate developer building mobile apps.
         </Text>
       </View>
     </View>
