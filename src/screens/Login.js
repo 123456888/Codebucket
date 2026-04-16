@@ -162,6 +162,7 @@ const Login = ({ navigation }) => {
             style={{
               flex: 1,
               padding: 12,
+              color:"black"
             }}
           />
 
