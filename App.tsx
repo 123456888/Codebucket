@@ -1,17 +1,19 @@
-import { View, Text } from 'react-native';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import StackNavigator from './src/navigation/StackNavigator';
-import { Provider } from 'react-redux';
-import { store } from './src/redux/Store';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Login from './src/screens/Login';
+import Profile from './src/screens/Profile';
+
+const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
-    <Provider store={store}>
-      <NavigationContainer>
-        <StackNavigator />
-      </NavigationContainer>
-    </Provider>
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Profile" component={Profile} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 

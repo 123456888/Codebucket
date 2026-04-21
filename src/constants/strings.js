@@ -1,0 +1,20 @@
+export const STRINGS = {
+  signIn: 'Sign In',
+  welcome: 'Welcome to BIPARD',
+  incorrectEmail: 'Incorrect Email!',
+  incorrectPass: 'Incorrect Password!',
+  password: 'Password',
+  username: 'Username',
+  selectRole: 'Select Role',
+  trainee: 'Trainee',
+  nonTrainee: 'Non-Trainee',
+  close: 'Close',
+  downloadPrint: 'Download and Print',
+  designAndDeveloped:"Design and Developed by Codebucket Solutions Private Limited",
+  hindiText:"बिहार लोक प्रशासन एवं ग्रामीण विकास संस्थान",
+  headingText:"Bihar Institute of Public Administration & Rural Development",
+  traineeBond:"GOOD BEHAVIOUR / INDEMNITY BOND BY TRAINEES",
+  userName:"Enter Your Username",
+  enterPassword:"Enter Your Password",
+
+};

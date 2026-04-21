@@ -1,23 +1,30 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../redux/authSlice';
-import InputField from '../components/InputField';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
 import ButtonComponent from '../components/ButtonComponent';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { COLORS } from '../constants/colors';
+import { STRINGS } from '../constants/strings';
+import InputField from '../components/InputField';
 
-const Login = ({ navigation }) => {
-  const dispatch = useDispatch();
-  const users = useSelector(state => state.auth.users);
-
-  const [email, setEmail] = useState('');
+const Login = () => {
+  const navigation = useNavigation();
+  const [role, setRole] = useState(STRINGS.nonTrainee);
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
   const [errEmail, setErrEmail] = useState(false);
   const [errPass, setErrPass] = useState(false);
-  const [errUser, setErrUser] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errLogin, setErrLogin] = useState(false);
 
   const handleLogin = () => {
     setLoading(true);
@@ -29,199 +36,221 @@ const Login = ({ navigation }) => {
       setErrPass(false);
 
       let hasError = false;
-      if (!email || !email.includes('@gmail.com')) {
+
+      if (role !== STRINGS.trainee) {
+        setErrLogin(true);
+        hasError = true;
+      }
+
+      if (!username || username !== 'subham@gmail.com') {
         setErrEmail(true);
         hasError = true;
       }
-      if (!password || password.length < 5) {
+
+      if (!password || password !== 'Bipard@123') {
         setErrPass(true);
         hasError = true;
       }
+
       if (hasError) return;
 
-      const foundUser = users.find(user => user.email === email);
-
-      if (!foundUser) {
-        setErrUser(true);
-        return;
-      }
-
-      if (foundUser.password !== password) {
-        setErrPass(true);
-        return;
-      }
-
-      dispatch(loginUser(foundUser));
-      navigation.replace('MainApp');
+      navigation.replace('Profile');
+      setUsername('');
+      setPassword('');
     }, 1000);
   };
 
-  const handleAccount = () => {
-    setErrEmail(false);
-    setErrPass(false);
-    setErrUser(false);
-    navigation.replace('SignUp');
-  };
-
   return (
-    <LinearGradient
-      colors={['#0b1427', '#384e74']}
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        paddingHorizontal: 20,
-      }}
-    >
-      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+    <ScrollView style={styles.container}>
+      <View style={styles.imageContainer}>
         <Image
-          source={require('../asset/image/icon.png')}
-          style={{ width: '100%', height: 70, marginBottom: 20 }}
-          resizeMode="contain"
-        ></Image>
-      </View>
-      <Text
-        style={{
-          fontSize: 21,
-          fontWeight: 'bold',
-          textAlign: 'center',
-          marginBottom: 26,
-          color: 'white',
-        }}
-      >
-        Welcome To <Text style={{ color: '#f7a831' }}>Codebucket</Text>
-      </Text>
-      <View
-        style={{
-          backgroundColor: 'white',
-          borderRadius: 20,
-          padding: 20,
-          paddingVertical: 30,
-          shadowColor: '#000',
-          shadowOpacity: 1,
-          shadowRadius: 10,
-          elevation: 10,
-        }}
-      >
-        {errUser == true ? (
-          <View style={{ alignItems: 'center', marginBottom: 10 }}>
-            <Text style={{ color: 'red', fontWeight: 'bold' }}>
-              Incorrect Email Or Password!
-            </Text>
-          </View>
-        ) : (
-          ''
-        )}
-        <InputField
-          placeholder="Enter email"
-          value={email}
-          onChangeText={text => {
-            setEmail(text);
-            if (text) {
-              setErrEmail(false);
-              setErrUser(false);
-            }
-          }}
-          style={{
-            borderWidth: 1,
-            borderColor: '#908d8d',
-            borderRadius: 10,
-            padding: 12,
-          }}
+          source={require('../asset/image/imageOne.png')}
+          style={styles.image}
         />
-        {errEmail == true ? (
-          <View>
-            <Text style={{ color: 'red', marginBottom: 5 }}>
-              Incorrect email-id!
-            </Text>
+        <View style={styles.absoluteTextContainer}>
+          <Text style={styles.overlayText}>{STRINGS.designAndDeveloped}</Text>
+        </View>
+      </View>
+
+      <View style={styles.formContainer}>
+        <Text style={styles.welcome}>{STRINGS.welcome}</Text>
+        <Text style={styles.signIn}>{STRINGS.signIn}</Text>
+
+        {errLogin ? (
+          <View style={styles.chooseTrainee}>
+            <Text style={styles.traineeLogin}>Choose Trainee To Login</Text>
           </View>
         ) : (
           ''
         )}
-        <View
-          style={{
-            borderWidth: 1,
-            borderColor: '#908d8d',
-            borderRadius: 10,
-            marginTop: 5,
-            flexDirection: 'row',
-            alignItems: 'center',
-            paddingRight: 10,
+
+        <Text style={styles.label}>{STRINGS.selectRole}</Text>
+        <View style={styles.pickerContainer}>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={role}
+              onValueChange={itemValue => {
+                setRole(itemValue);
+                setErrEmail(false);
+                setErrPass(false);
+                setErrLogin(false);
+              }}
+              style={styles.pickerText}
+            >
+              <Picker.Item
+                label={STRINGS.nonTrainee}
+                value={STRINGS.nonTrainee}
+              />
+              <Picker.Item label={STRINGS.trainee} value={STRINGS.trainee} />
+            </Picker>
+          </View>
+        </View>
+
+        <Text style={styles.label}>{STRINGS.userName}</Text>
+        <InputField
+          placeholder={STRINGS.username}
+          value={username}
+          onChangeText={text => {
+            setUsername(text);
+            if (text) setErrEmail(false);
+            setErrLogin(false);
           }}
-        >
+          style={styles.input}
+        />
+        {errEmail && (
+          <Text style={styles.errorText}>{STRINGS.incorrectEmail}</Text>
+        )}
+
+        <Text style={styles.label}>{STRINGS.enterPassword}</Text>
+        <View style={styles.passwordContainer}>
           <InputField
-            placeholder="Enter password"
+            placeholder={STRINGS.password}
+            secureTextEntry={!showPassword}
             value={password}
             onChangeText={text => {
               setPassword(text);
-              if (text) {
-                setErrPass(false);
-                setErrUser(false);
-              }
+              if (text) setErrPass(false);
+              setErrLogin(false);
             }}
-            secureTextEntry={!showPassword}
-            style={{
-              flex: 1,
-              padding: 12,
-              color:"black"
-            }}
+            style={styles.passwordInput}
           />
-
           <TouchableOpacity
-            style={{
-              padding: 15,
-              marginLeft: 20,
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-            }}
             onPress={() => setShowPassword(!showPassword)}
+            style={styles.showHideBtn}
           >
-            <Icon
-              name={showPassword ? 'eye' : 'eye-off'}
-              size={22}
-              color="#2a5298"
-            />
+            <Text>{showPassword ? 'Hide' : 'Show'}</Text>
           </TouchableOpacity>
         </View>
-        {errPass == true ? (
-          <View>
-            <Text style={{ color: 'red', marginBottom: 8 }}>
-              Incorrect password!
-            </Text>
-          </View>
-        ) : (
-          ''
+        {errPass && (
+          <Text style={styles.errorText}>{STRINGS.incorrectPass}</Text>
         )}
+
         <ButtonComponent
-          title={'Login'}
-          loading={loading}
+          title={STRINGS.signIn}
           onPress={handleLogin}
-          style={{
-            backgroundColor: '#2a5298',
-            padding: 15,
-            borderRadius: 10,
-            alignItems: 'center',
-            marginTop: 20,
-          }}
-        ></ButtonComponent>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: 8,
-          }}
-        >
-          <Text>Don't have an account?</Text>
-          <TouchableOpacity onPress={handleAccount}>
-            <Text style={{ fontWeight: 'bold', color: '#2a5298' }}>
-              {' '}
-              Sign Up
-            </Text>
-          </TouchableOpacity>
-        </View>
+          loading={loading}
+          style={styles.button}
+        />
+
+        <Text style={styles.footer}>@ 2026 BIPARD.</Text>
       </View>
-    </LinearGradient>
+    </ScrollView>
   );
 };
 
 export default Login;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+  },
+  imageContainer: {
+    height: 300,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+  },
+  absoluteTextContainer: {
+    position: 'absolute',
+    bottom: 10,
+    width: '100%',
+    alignItems: 'center',
+  },
+  overlayText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.white,
+    textAlign: 'center',
+    paddingHorizontal: 10,
+  },
+  formContainer: {
+    padding: 20,
+  },
+  welcome: {
+    color: COLORS.border,
+  },
+  signIn: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  label: {
+    marginBottom: 5,
+    marginTop: 10,
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: COLORS.gray,
+    borderRadius: 5,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: COLORS.gray,
+    borderRadius: 5,
+    padding: 13,
+    marginTop: 5,
+  },
+  passwordContainer: {
+    borderWidth: 1,
+    borderColor: COLORS.gray,
+    borderRadius: 5,
+    marginTop: 5,
+  },
+  passwordInput: {
+    padding: 13,
+    color:COLORS.black,
+  },
+  showHideBtn: {
+    position: 'absolute',
+    right: 10,
+    top: 13,
+  },
+  errorText: {
+    color: COLORS.danger,
+  },
+  button: {
+    backgroundColor: COLORS.primary,
+    padding: 15,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  footer: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 12,
+  },
+  traineeLogin: {
+    color: COLORS.red,
+    fontWeight: 'bold',
+  },
+  chooseTrainee: {
+    alignItems: 'center',
+  },
+  pickerText:{
+    color:COLORS.black,
+  }
+});
